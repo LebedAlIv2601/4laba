@@ -76,5 +76,7 @@ int ClApp ::exeApp() {
 //    showTree();
 //    showPath();
     printConnectionsAndSignals();
+    showTree();
+    printSignalsAll();
     return 0;
 }

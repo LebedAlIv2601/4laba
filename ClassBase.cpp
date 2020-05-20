@@ -1,6 +1,3 @@
-//
-// Created by User on 20.05.2020.
-//
 #include <sstream>
 
 #include "ClassBase.h"
@@ -92,7 +89,7 @@ ClassBase* ClassBase ::getChild(string name) {
 }
 
 void ClassBase ::setState(int state) {
-        this->state = state;
+    this->state = state;
 }
 
 int ClassBase ::getState() {
@@ -332,18 +329,20 @@ void ClassBase ::signalF(string &) {
 }
 
 void ClassBase ::setSignalText(string text) {
-    this->message = &text;
+    this->message = text;
 }
 
-string* ClassBase ::getSignalText() {
+string ClassBase ::getSignalText() {
     return this->message;
 }
 
 void ClassBase ::printSignals() {
-    emitSignals((void(*)(string &))(& (this->signal1)), *this->getSignalText());
+    //emitSignals((void(*)(string &))(& (this->signal1)), *this->getSignalText());
+    for(int i = 0; i<this->connections.size(); i++){
+        cout<<endl<<"Signal to " << connections.at(i)->classOne->getName()<< " Text: " << connections.at(i)->firstClass->getName() <<" -> "<< getSignalText();
+    }
     for(auto e : this->children){
         e->printSignals();
-        return;
     }
     if(this->children.empty()){
         return;
@@ -394,11 +393,18 @@ void ClassBase ::printConnectionsAndSignals() {
         cin>>text;
     }
 
-    showTree();
+
+}
+void ClassBase ::printSignalsAll() {
+
     cout<<endl<<"Set connects"<<endl;
     for(int k =0; k<getRoot()->globalList.size(); k++){
         cout<<globalList.at(k)->conNum<<" "<<globalList.at(k)->firstClass->getName()<<" "<<globalList.at(k)->classOne->getName()<<endl;
     }
-    cout<<"Emit signals"<<endl;
+    cout<<"Emit signals";
     printSignals();
+
 }
+
+
+

@@ -1,7 +1,3 @@
-//
-// Created by User on 20.05.2020.
-//
-
 #ifndef PROGA_CLASSBASE_H
 #define PROGA_CLASSBASE_H
 
@@ -24,7 +20,7 @@ private:
     string name;
     ClassBase *parent;
     int state;
-    string * message;
+    string message;
 
     struct objHand{
         int conNum;
@@ -69,13 +65,13 @@ public:
     void signalF(string &);
     void (ClassBase::*signal1)(string &) = &ClassBase::signalF;
 
-//    void (*signal11)(string &) = signal1;
+    //    void (*signal11)(string &) = signal1;
 
     void handlerF(ClassBase * object, string text);
     void (ClassBase ::* handler1)(ClassBase *, string) = &ClassBase::handlerF;
 
     void setSignalText(string text);
-    string * getSignalText();
+    string getSignalText();
     void showPath();
     void setConnection(int num, void(* signal)(string &), ClassBase * goalObject, void(* handler)(ClassBase * firstObj, string &));
     void deleteConnection(int num, void(* signal)(string &), ClassBase * goalObject, void(* handler)(ClassBase * firstObj, string &));
@@ -83,7 +79,7 @@ public:
     void printSignals();
 
     void printConnectionsAndSignals();
+    void printSignalsAll();
 };
-
 
 #endif //PROGA_CLASSBASE_H
