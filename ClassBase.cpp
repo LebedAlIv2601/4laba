@@ -260,7 +260,7 @@ void ClassBase ::setConnection(int num, void(* signal)(string &), ClassBase * go
     if(connections.size()>0){
         for(int i =0; i<connections.size(); i++){
             value = connections.at(i);
-            if(value->conNum == num && value->signalMethod == signal && value->classOne == goalObject && value->objHandler == handler){
+            if(value->signalMethod == signal && value->classOne == goalObject && value->objHandler == handler){
                 return;
             }
         }
@@ -283,7 +283,7 @@ void ClassBase ::deleteConnection(int num, void(* signal)(string &), ClassBase *
         it=connections.begin();
         for(int i =0; i<connections.size(); i++){
             value = connections.at(i);
-            if(value->conNum == num && value->signalMethod == signal && value->classOne == goalObject && value->objHandler == handler){
+            if(value->signalMethod == signal && value->classOne == goalObject && value->objHandler == handler){
                 connections.erase(it);
                 return;
             }
@@ -293,7 +293,7 @@ void ClassBase ::deleteConnection(int num, void(* signal)(string &), ClassBase *
         itGl=getRoot()->connections.begin();
         for(int i =0; i<getRoot()->connections.size(); i++){
             value = getRoot()->connections.at(i);
-            if(value->conNum == num && value->signalMethod == signal && value->classOne == goalObject && value->objHandler == handler){
+            if(value->signalMethod == signal && value->classOne == goalObject && value->objHandler == handler){
                 getRoot()->connections.erase(itGl);
                 return;
             }
@@ -338,14 +338,19 @@ string ClassBase ::getSignalText() {
 
 void ClassBase ::printSignals() {
     //emitSignals((void(*)(string &))(& (this->signal1)), *this->getSignalText());
-    for(int i = 0; i<this->connections.size(); i++){
-        cout<<endl<<"Signal to " << connections.at(i)->classOne->getName()<< " Text: " << connections.at(i)->firstClass->getName() <<" -> "<< getSignalText();
-    }
-    for(auto e : this->children){
-        e->printSignals();
-    }
-    if(this->children.empty()){
+    if(getSignalText() == ""){
         return;
+    } else {
+        for (int i = 0; i < this->connections.size(); i++) {
+            cout << endl << "Signal to " << connections.at(i)->classOne->getName() << " Text: "
+                 << connections.at(i)->firstClass->getName() << " -> " << getSignalText();
+        }
+        for (auto e : this->children) {
+            e->printSignals();
+        }
+        if (this->children.empty()) {
+            return;
+        }
     }
 }
 
@@ -364,7 +369,7 @@ void ClassBase ::printConnectionsAndSignals() {
         } else {
             b1 = getRoot()->findObject(name1);
             if(name2 == getRoot()->getName()){
-                b1->setConnection(num, (void(*)(string &))(& (b1->signal1)), b2, (void(*)(ClassBase *, string &))(& (getRoot()->handler1)));
+                b1->setConnection(num, (void(*)(string &))(& (b1->signal1)), getRoot(), (void(*)(ClassBase *, string &))(& (getRoot()->handler1)));
             } else {
                 b2 = getRoot()->findObject(name2);
                 b1->setConnection(num, (void(*)(string &))(& (b1->signal1)), b2, (void(*)(ClassBase *, string &))(& (b2->handler1)));

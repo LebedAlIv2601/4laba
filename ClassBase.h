@@ -20,7 +20,7 @@ private:
     string name;
     ClassBase *parent;
     int state;
-    string message;
+    string message = "";
 
     struct objHand{
         int conNum;
