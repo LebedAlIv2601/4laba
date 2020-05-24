@@ -5,14 +5,14 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <map>
-#include <unordered_map>
 
-#define SIGNAL(signalF)((void(*)(string &))(& signalF));
-#define HANDLER(handlerF)((void(*)(ClassBase *, string &))(& handlerF));
+
 using namespace std;
 
 class ClassBase {
+    typedef void(ClassBase:: * TYPE_SIGNAL)(string &);
+    typedef void(ClassBase:: * TYPE_HANDLER)(ClassBase *,string);
+#define CALL_FUNCTION(obj,ptrToFunction)  ((obj).*(ptrToFunction))
 private:
     vector<ClassBase *> children;
     vector<ClassBase *> :: iterator it_children;
@@ -24,10 +24,10 @@ private:
 
     struct objHand{
         int conNum;
-        void(*signalMethod)(string &);
-        ClassBase * firstClass;
+        ClassBase * signalClass;
+        TYPE_SIGNAL signalMethod;
         ClassBase * classOne;
-        void(* objHandler)(ClassBase * objSecond, string &);
+        TYPE_HANDLER objHandler;
     };
 
     vector<objHand *> connections;
@@ -63,19 +63,12 @@ public:
     ClassBase * getRootPath();
     ClassBase * findByPath(string path);
     void signalF(string &);
-    void (ClassBase::*signal1)(string &) = &ClassBase::signalF;
-
-    //    void (*signal11)(string &) = signal1;
-
-    void handlerF(ClassBase * object, string text);
-    void (ClassBase ::* handler1)(ClassBase *, string) = &ClassBase::handlerF;
-
+    void handlerF(ClassBase *, string text);
     void setSignalText(string text);
-    string getSignalText();
     void showPath();
-    void setConnection(int num, void(* signal)(string &), ClassBase * goalObject, void(* handler)(ClassBase * firstObj, string &));
-    void deleteConnection(int num, void(* signal)(string &), ClassBase * goalObject, void(* handler)(ClassBase * firstObj, string &));
-    void emitSignals(void(* signal)(string &), string & message);
+    void setConnection(int num, TYPE_SIGNAL signal, ClassBase * goalObject, TYPE_HANDLER handler);
+    void deleteConnection(int num, TYPE_SIGNAL signal, ClassBase * goalObject, TYPE_HANDLER handler);
+    void emitSignals(TYPE_SIGNAL signal, string & message);
     void printSignals();
 
     void printConnectionsAndSignals();

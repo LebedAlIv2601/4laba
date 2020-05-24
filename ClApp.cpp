@@ -27,40 +27,46 @@ void ClApp ::buildTree() {
     while(true){
         if(name == this->getName()) {
             switch (n) {
+                case 1:
+                    a = new ClassBase(name1, state, this);
+                    break;
                 case 2:
                     a = new Class2(name1, state, this);
                     break;
                 case 3:
                     a = new Class3(name1, state, this);
                     break;
-                case 4:
-                    a = new Class4(name1, state, this);
-                    break;
-                case 5:
-                    a = new Class5(name1, state, this);
-                    break;
-                case 6:
-                    a = new Class6(name1, state, this);
-                    break;
+//                case 4:
+//                    a = new Class4(name1, state, this);
+//                    break;
+//                case 5:
+//                    a = new Class5(name1, state, this);
+//                    break;
+//                case 6:
+//                    a = new Class6(name1, state, this);
+//                    break;
             }
         } else{
             b = this->findObject(name);
             switch(n){
+                case 1:
+                    a = new ClassBase(name1, state, b);
+                    break;
                 case 2:
                     a = new Class2(name1, state, b);
                     break;
                 case 3:
                     a = new Class3(name1, state, b);
                     break;
-                case 4:
-                    a = new Class4(name1, state, b);
-                    break;
-                case 5:
-                    a = new Class5(name1, state, b);
-                    break;
-                case 6:
-                    a = new Class6(name1, state, b);
-                    break;
+//                case 4:
+//                    a = new Class4(name1, state, b);
+//                    break;
+//                case 5:
+//                    a = new Class5(name1, state, b);
+//                    break;
+//                case 6:
+//                    a = new Class6(name1, state, b);
+//                    break;
             }
         }
         cin>>name;

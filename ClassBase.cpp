@@ -254,7 +254,7 @@ void ClassBase ::showPath() {
     cout << ss.str();
 }
 
-void ClassBase ::setConnection(int num, void(* signal)(string &), ClassBase * goalObject, void(* handler)(ClassBase * firstObj, string &)) {
+void ClassBase ::setConnection(int num, TYPE_SIGNAL signal, ClassBase * goalObject, TYPE_HANDLER handler) {
     objHand * value;
 
     if(connections.size()>0){
@@ -267,15 +267,15 @@ void ClassBase ::setConnection(int num, void(* signal)(string &), ClassBase * go
     }
     value = new objHand;
     value->conNum = num;
+    value->signalClass = this;
     value->signalMethod = signal;
     value->classOne = goalObject;
     value->objHandler = handler;
-    value->firstClass = this;
     connections.push_back(value);
     getRoot()->globalList.push_back(value);
 }
 
-void ClassBase ::deleteConnection(int num, void(* signal)(string &), ClassBase * goalObject, void(* handler)(ClassBase * firstObj, string &)){
+void ClassBase ::deleteConnection(int num, TYPE_SIGNAL signal, ClassBase * goalObject, TYPE_HANDLER handler){
     objHand * value;
 
     if(connections.size()>0){
@@ -302,26 +302,24 @@ void ClassBase ::deleteConnection(int num, void(* signal)(string &), ClassBase *
     }
 }
 
-void ClassBase ::emitSignals(void(* signal)(string &), string & message) {
-    void (* handler)(ClassBase * objOne, string &);
-    if(connections.empty()){
+void ClassBase ::emitSignals(TYPE_SIGNAL signal, string & message) {
+    TYPE_HANDLER handler;
+    if(connections.empty()) {
         return;
     }
 
-    (signal)(message);
+    CALL_FUNCTION(*this, signal)(message);
 
     for(int i =0; i<connections.size(); i++){
         if((connections.at(i)->signalMethod)==signal){
             handler = connections.at(i)->objHandler;
-            (handler)(connections.at(i)->classOne, message);
+            CALL_FUNCTION(*this, handler)(connections.at(i)->classOne, message);
         }
     }
 }
 
-void ClassBase ::handlerF(ClassBase *object, string text) {
-    for(int i = 0; i<connections.size(); i++){
-        cout<<"Signal to " << this->getName()<< " Text: " << object->getName() <<" -> "<< text;
-    }
+void ClassBase ::handlerF(ClassBase * object, string text) {
+    cout<<endl<<"Signal to " << object->getName()<< " Text: " << this->getName() <<" -> "<< text;
 }
 
 void ClassBase ::signalF(string &) {
@@ -332,19 +330,11 @@ void ClassBase ::setSignalText(string text) {
     this->message = text;
 }
 
-string ClassBase ::getSignalText() {
-    return this->message;
-}
-
 void ClassBase ::printSignals() {
-    //emitSignals((void(*)(string &))(& (this->signal1)), *this->getSignalText());
-    if(getSignalText() == ""){
+    if(this->message == ""){
         return;
     } else {
-        for (int i = 0; i < this->connections.size(); i++) {
-            cout << endl << "Signal to " << connections.at(i)->classOne->getName() << " Text: "
-                 << connections.at(i)->firstClass->getName() << " -> " << getSignalText();
-        }
+        emitSignals(&ClassBase::signalF, this->message);
         for (auto e : this->children) {
             e->printSignals();
         }
@@ -365,14 +355,14 @@ void ClassBase ::printConnectionsAndSignals() {
     while(true){
         if (name1 == getRoot()->getName()){
             b2 = getRoot()->findObject(name2);
-            getRoot()->setConnection(num, (void(*)(string &))(& (getRoot()->signal1)), b2, (void(*)(ClassBase *, string &))(& (b2->handler1)));
+            getRoot()->setConnection(num, &ClassBase::signalF, b2, &ClassBase::handlerF);
         } else {
             b1 = getRoot()->findObject(name1);
             if(name2 == getRoot()->getName()){
-                b1->setConnection(num, (void(*)(string &))(& (b1->signal1)), getRoot(), (void(*)(ClassBase *, string &))(& (getRoot()->handler1)));
+                b1->setConnection(num, &ClassBase::signalF, getRoot(), &ClassBase::handlerF);
             } else {
                 b2 = getRoot()->findObject(name2);
-                b1->setConnection(num, (void(*)(string &))(& (b1->signal1)), b2, (void(*)(ClassBase *, string &))(& (b2->handler1)));
+                b1->setConnection(num, &ClassBase::signalF, b2, &ClassBase::handlerF);
             }
         }
         cin>>num;
@@ -404,7 +394,7 @@ void ClassBase ::printSignalsAll() {
 
     cout<<endl<<"Set connects"<<endl;
     for(int k =0; k<getRoot()->globalList.size(); k++){
-        cout<<globalList.at(k)->conNum<<" "<<globalList.at(k)->firstClass->getName()<<" "<<globalList.at(k)->classOne->getName()<<endl;
+        cout<<globalList.at(k)->conNum<<" "<<globalList.at(k)->signalClass->getName()<<" "<<globalList.at(k)->classOne->getName()<<endl;
     }
     cout<<"Emit signals";
     printSignals();
