@@ -352,7 +352,14 @@ void ClassBase ::printConnectionsAndSignals() {
     ClassBase* b2;
     cin>>num;
     while(num!=0){
-        cin>>name1>>name2;
+        cin>>name1;
+        if (name1.find("0") != -1){
+            break;
+        }
+        cin>>name2;
+        if(name2.find("0") != -1){
+            break;
+        }
         if (name1 == getRoot()->getName()){
             b2 = getRoot()->findObject(name2);
             getRoot()->setConnection(num, &ClassBase::signalF, b2, &ClassBase::handlerF);
@@ -370,8 +377,11 @@ void ClassBase ::printConnectionsAndSignals() {
     string text;
     cin>>name1;
 
-    while(name1 != "endsignals"){
+    while(name1.find("endsignals") == -1){
         cin>>text;
+        if(text.find("endsignals") != -1){
+            break;
+        }
         if (name1 == getRoot()->getName()){
             getRoot()->setSignalText(text);
         }else {
@@ -380,9 +390,9 @@ void ClassBase ::printConnectionsAndSignals() {
         }
         cin>>name1;
     }
-
-
 }
+
+
 void ClassBase ::printSignalsAll() {
 
     cout<<endl<<"Set connects"<<endl;
