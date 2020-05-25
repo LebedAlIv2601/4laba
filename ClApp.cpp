@@ -10,16 +10,18 @@
 #include "Class6.h"
 
 
-//ClApp :: ClApp() {
-//    setName("root");
-//    setState(1);
-//}
+ClApp :: ClApp() {
+    setState(1);
+}
 ClApp :: ClApp(string name) {
     setName(name);
     setState(1);
 }
 
 void ClApp ::buildTree() {
+    string nameRoot;
+    cin>>nameRoot;
+    this->setName(nameRoot);
     string name, name1;
     int n, state;
     ClassBase *a, *b;
