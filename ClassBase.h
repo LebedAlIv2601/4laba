@@ -31,6 +31,7 @@ private:
     };
 
     vector<objHand *> connections;
+    vector<ClassBase *> queueMessages;
     vector<objHand *> globalList;
 
     ClassBase * getRoot();

@@ -335,12 +335,6 @@ void ClassBase ::printSignals() {
         return;
     } else {
         emitSignals(&ClassBase::signalF, this->message);
-        for (auto e : this->children) {
-            e->printSignals();
-        }
-        if (this->children.empty()) {
-            return;
-        }
     }
 }
 
@@ -384,10 +378,13 @@ void ClassBase ::printConnectionsAndSignals() {
         }
         if (name1 == getRoot()->getName()){
             getRoot()->setSignalText(text);
+            queueMessages.push_back(getRoot());
         }else {
             b1 = getRoot()->findObject(name1);
             b1->setSignalText(text);
+            queueMessages.push_back(b1);
         }
+
         cin>>name1;
     }
 }
@@ -400,7 +397,10 @@ void ClassBase ::printSignalsAll() {
         cout<<globalList.at(k)->conNum<<" "<<globalList.at(k)->signalClass->getName()<<" "<<globalList.at(k)->classOne->getName()<<endl;
     }
     cout<<"Emit signals";
-    printSignals();
+    for(int k =0; k<getRoot()->queueMessages.size(); k++){
+        queueMessages.at(k)->printSignals();
+    }
+//    printSignals();
 
 }
 
